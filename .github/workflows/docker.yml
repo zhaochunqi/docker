@@ -42,7 +42,7 @@ jobs:
       - id: set-matrix
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            if [[ -n "${{ github.event.inputs.folders }}" ]]; then
+            if [[ "${{ github.event.inputs.folders }}" != "" ]]; then
               MATRIX=$(echo "${{ github.event.inputs.folders }}" | jq -Rc 'split(",")')
             else
               MATRIX=$(for dir in docker-*/; do [ -d "$dir" ] && echo "${dir%/}" | sed 's/^docker-//'; done | jq -R . | jq -s -c .)
