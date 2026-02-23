@@ -8,6 +8,11 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      folders:
+        description: 'Folders to build (comma separated, empty for all)'
+        required: false
+        default: ''
 
 jobs:
   build:
@@ -21,16 +26,18 @@ jobs:
 
       - id: changed
         run: |
-          if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ] || [ -z "${{ github.event.before }}" ]; then
-            CHANGED=$(git diff --name-only HEAD~1 HEAD 2>/dev/null | grep '/' | cut -d/ -f1 | sort -u | grep '^docker-' | sed 's/^docker-//')
+          if [ "${{ github.event.inputs.folders }}" != "" ]; then
+            FOLDERS="${{ github.event.inputs.folders }}"
+          elif [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ] || [ -z "${{ github.event.before }}" ]; then
+            FOLDERS=$(ls -d docker-*/ 2>/dev/null | sed 's|/$||' | sed 's/^docker-//' | tr '\n' ' ')
           else
-            CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '/' | cut -d/ -f1 | sort -u | grep '^docker-' | sed 's/^docker-//')
+            FOLDERS=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '/' | cut -d/ -f1 | sort -u | grep '^docker-' | sed 's/^docker-//')
           fi
           
-          if [ -z "$CHANGED" ]; then
+          if [ -z "$FOLDERS" ]; then
             echo 'matrix=[]' >> $GITHUB_OUTPUT
           else
-            MATRIX=$(echo "$CHANGED" | jq -R . | jq -s . | tr -d ' \n')
+            MATRIX=$(echo "$FOLDERS" | jq -R . | jq -s . | tr -d ' \n')
             echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
           fi
 
