@@ -26,8 +26,10 @@ jobs:
 
       - id: changed
         run: |
-          if [ "${{ github.event.inputs.folders }}" != "" ]; then
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.folders }}" != "" ]; then
             FOLDERS="${{ github.event.inputs.folders }}"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            FOLDERS=$(ls -d docker-*/ 2>/dev/null | sed 's|/$||' | sed 's/^docker-//' | tr '\n' ' ')
           elif [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ] || [ -z "${{ github.event.before }}" ]; then
             FOLDERS=$(ls -d docker-*/ 2>/dev/null | sed 's|/$||' | sed 's/^docker-//' | tr '\n' ' ')
           else
