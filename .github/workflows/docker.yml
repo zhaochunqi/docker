@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -16,11 +17,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Detect changed folders
         id: set-matrix
         run: |
           if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+            CHANGED_FOLDERS=$(git ls-tree -r --name-only HEAD | grep -E '^[^/]+/' | sed 's|/.*||' | sort -u)
+          elif ! git rev-parse --verify ${{ github.event.before }} >/dev/null 2>&1; then
             CHANGED_FOLDERS=$(git ls-tree -r --name-only HEAD | grep -E '^[^/]+/' | sed 's|/.*||' | sort -u)
           else
             CHANGED_FOLDERS=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | \
