@@ -18,22 +18,26 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.changed.outputs.matrix }}
+      matrix: ${{ steps.filter.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - id: changed
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            folders:
+              - 'docker-*/'
+          list-files: shell
+
+      - id: set-matrix
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.folders }}" != "" ]; then
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ github.event.inputs.folders }}" ]]; then
             FOLDERS="${{ github.event.inputs.folders }}"
-          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            FOLDERS=$(ls -d docker-*/ 2>/dev/null | sed 's|/$||' | sed 's/^docker-//' | tr '\n' ' ')
-          elif [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ] || [ -z "${{ github.event.before }}" ]; then
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             FOLDERS=$(ls -d docker-*/ 2>/dev/null | sed 's|/$||' | sed 's/^docker-//' | tr '\n' ' ')
           else
-            FOLDERS=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '/' | cut -d/ -f1 | sort -u | grep '^docker-' | sed 's/^docker-//')
+            FOLDERS=${{ steps.filter.outputs.folders }}
           fi
           
           if [ -z "$FOLDERS" ]; then
