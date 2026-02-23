@@ -22,35 +22,44 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: dorny/paths-filter@v2
+      - name: Generate filters
+        if: github.event_name != 'workflow_dispatch'
+        run: |
+          for dir in docker-*/; do
+            if [ -d "$dir" ]; then
+              folder=${dir%/}
+              name=${folder#docker-}
+              echo "$name: $folder/**" >> filter.yml
+            fi
+          done
+
+      - uses: dorny/paths-filter@v3
         id: filter
+        if: github.event_name != 'workflow_dispatch'
         with:
-          filters: |
-            folders:
-              - 'docker-*/'
-          list-files: shell
+          filters: filter.yml
 
       - id: set-matrix
         run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ github.event.inputs.folders }}" ]]; then
-            FOLDERS="${{ github.event.inputs.folders }}"
-          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            FOLDERS=$(ls -d docker-*/ 2>/dev/null | sed 's|/$||' | sed 's/^docker-//' | tr '\n' ' ')
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            if [[ -n "${{ github.event.inputs.folders }}" ]]; then
+              MATRIX=$(echo "${{ github.event.inputs.folders }}" | jq -Rc 'split(",")')
+            else
+              MATRIX=$(for dir in docker-*/; do [ -d "$dir" ] && echo "${dir%/}" | sed 's/^docker-//'; done | jq -R . | jq -s -c .)
+            fi
           else
-            FOLDERS=${{ steps.filter.outputs.folders }}
+            MATRIX='${{ steps.filter.outputs.changes }}'
           fi
           
-          if [ -z "$FOLDERS" ]; then
-            echo 'matrix=[]' >> $GITHUB_OUTPUT
-          else
-            MATRIX=$(echo "$FOLDERS" | jq -R . | jq -s . | tr -d ' \n')
-            echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+          if [ -z "$MATRIX" ] || [ "$MATRIX" == "null" ]; then
+            MATRIX="[]"
           fi
+          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
 
   build-push:
     needs: build
     runs-on: ubuntu-latest
-    if: ${{ fromJson(needs.build.outputs.matrix).length > 0 }}
+    if: ${{ needs.build.outputs.matrix != '[]' && needs.build.outputs.matrix != '' }}
     strategy:
       matrix:
         folder: ${{ fromJson(needs.build.outputs.matrix) }}
