@@ -13,53 +13,47 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix: ${{ steps.changed.outputs.matrix }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Detect changed folders
-        id: set-matrix
+      - id: changed
         run: |
-          if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ] || ! git rev-parse --verify ${{ github.event.before }} >/dev/null 2>&1; then
-            CHANGED_FOLDERS=$(git ls-tree -r --name-only HEAD | grep -E '^[^/]+/' | sed 's|/.*||' | sort -u)
+          if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ] || [ -z "${{ github.event.before }}" ]; then
+            CHANGED=$(git diff --name-only HEAD~1 HEAD 2>/dev/null | grep '/' | cut -d/ -f1 | sort -u)
           else
-            CHANGED_FOLDERS=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | \
-              grep -E '^[^/]+/' | sed 's|/.*||' | sort -u | grep -v '^$')
+            CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '/' | cut -d/ -f1 | sort -u)
           fi
           
-          if [ -z "$CHANGED_FOLDERS" ]; then
-            echo "matrix={\"include\":[]}" >> $GITHUB_OUTPUT
+          if [ -z "$CHANGED" ]; then
+            echo 'matrix=[]' >> $GITHUB_OUTPUT
           else
-            MATRIX=$(echo "$CHANGED_FOLDERS" | jq -R -s 'split("\n") | map(select(length > 0)) | map({"folder": .})')
-            echo "matrix={\"include\":$MATRIX}" >> $GITHUB_OUTPUT
+            MATRIX=$(echo "$CHANGED" | jq -R . | jq -s .)
+            echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
           fi
 
   build-push:
     needs: build
     runs-on: ubuntu-latest
-    if: ${{ needs.build.outputs.matrix != '' }}
+    if: ${{ fromJson(needs.build.outputs.matrix).length > 0 }}
     strategy:
-      matrix: ${{ fromJson(needs.build.outputs.matrix) }}
+      matrix:
+        folder: ${{ fromJson(needs.build.outputs.matrix) }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v3
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+      - uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
-        uses: docker/build-push-action@v5
+      - uses: docker/build-push-action@v5
         with:
           context: ./${{ matrix.folder }}
           push: ${{ github.event_name != 'pull_request' }}
