@@ -22,15 +22,15 @@ jobs:
       - id: changed
         run: |
           if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ] || [ -z "${{ github.event.before }}" ]; then
-            CHANGED=$(git diff --name-only HEAD~1 HEAD 2>/dev/null | grep '/' | cut -d/ -f1 | sort -u | grep '^docker-')
+            CHANGED=$(git diff --name-only HEAD~1 HEAD 2>/dev/null | grep '/' | cut -d/ -f1 | sort -u | grep '^docker-' | sed 's/^docker-//')
           else
-            CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '/' | cut -d/ -f1 | sort -u | grep '^docker-')
+            CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '/' | cut -d/ -f1 | sort -u | grep '^docker-' | sed 's/^docker-//')
           fi
           
           if [ -z "$CHANGED" ]; then
             echo 'matrix=[]' >> $GITHUB_OUTPUT
           else
-            MATRIX=$(echo "$CHANGED" | jq -R . | jq -s .)
+            MATRIX=$(echo "$CHANGED" | jq -R . | jq -s . | tr -d ' \n')
             echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
           fi
 
@@ -55,6 +55,6 @@ jobs:
 
       - uses: docker/build-push-action@v5
         with:
-          context: ./${{ matrix.folder }}
+          context: ./docker-${{ matrix.folder }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ghcr.io/${{ github.actor }}/${{ matrix.folder }}:latest
