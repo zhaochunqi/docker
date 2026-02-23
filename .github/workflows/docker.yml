@@ -22,9 +22,9 @@ jobs:
       - id: changed
         run: |
           if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ] || [ -z "${{ github.event.before }}" ]; then
-            CHANGED=$(git diff --name-only HEAD~1 HEAD 2>/dev/null | grep '/' | cut -d/ -f1 | sort -u)
+            CHANGED=$(git diff --name-only HEAD~1 HEAD 2>/dev/null | grep '/' | cut -d/ -f1 | sort -u | grep '^docker-')
           else
-            CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '/' | cut -d/ -f1 | sort -u)
+            CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '/' | cut -d/ -f1 | sort -u | grep '^docker-')
           fi
           
           if [ -z "$CHANGED" ]; then
