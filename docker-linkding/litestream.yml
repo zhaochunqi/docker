@@ -1,0 +1,11 @@
+dbs:
+  - path: /etc/linkding/data/db.sqlite3
+    replicas:
+      - type: s3
+        endpoint: ${LITESTREAM_S3_ENDPOINT}
+        bucket: ${LITESTREAM_S3_BUCKET}
+        path: ${LITESTREAM_S3_PATH}
+        access-key-id: ${LITESTREAM_ACCESS_KEY_ID}
+        secret-access-key: ${LITESTREAM_SECRET_ACCESS_KEY}
+        snapshot-interval: 24h
+        retention: 168h # Retain 7 days of backups
