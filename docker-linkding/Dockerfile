@@ -1,11 +1,11 @@
 # Build arguments for metadata
-ARG VERSION="v1.45.0"
+ARG VERSION="1.45.0"
 
 # Stage 1: Get Litestream binary
 FROM litestream/litestream:0.3 AS builder
 
 # Stage 2: Main image based on Linkding
-FROM sissbruecker/linkding:${VERSION}
+FROM ghcr.io/sissbruecker/linkding:${VERSION}
 
 # OCI standard labels
 # See: https://github.com/opencontainers/image-spec/blob/main/annotations.md
