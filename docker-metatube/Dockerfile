@@ -9,6 +9,7 @@ COPY --from=builder /usr/local/bin/litestream /usr/local/bin/litestream
 RUN mkdir -p /data
 
 COPY entrypoint.sh /entrypoint.sh
+COPY litestream.yml /etc/litestream.yml
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
