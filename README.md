@@ -10,6 +10,7 @@
 | docker-traefik-cert-dumper | Traefik 证书导出工具 | ghcr.io/zhaochunqi/docker-traefik-cert-dumper |
 | docker-traefik-cert-remover | Traefik 证书清理工具 | ghcr.io/zhaochunqi/docker-traefik-cert-remover |
 | docker-linkding | Linkding 书签管理器集成 Litestream | ghcr.io/zhaochunqi/linkding |
+| docker-ntfy | ntfy 消息推送服务集成 Litestream | ghcr.io/zhaochunqi/docker-ntfy |
 
 ## 自动构建
 
