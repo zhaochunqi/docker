@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'docker-*/**'
   pull_request:
     branches:
       - main
+    paths:
+      - 'docker-*/**'
   workflow_dispatch:
     inputs:
       folders:
@@ -21,25 +25,11 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Generate filters
-        if: github.event_name != 'workflow_dispatch'
-        run: |
-          for dir in docker-*/; do
-            if [ -d "$dir" ]; then
-              folder=${dir%/}
-              name=${folder#docker-}
-              echo "$name: $folder/**" >> filter.yml
-            fi
-          done
-
-      - uses: dorny/paths-filter@v3
-        id: filter
-        if: github.event_name != 'workflow_dispatch'
         with:
-          filters: filter.yml
+          fetch-depth: 2
 
-      - id: set-matrix
+      - name: Detect changed folders
+        id: set-matrix
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             if [[ "${{ github.event.inputs.folders }}" != "" ]]; then
@@ -47,13 +37,16 @@ jobs:
             else
               MATRIX=$(for dir in docker-*/; do [ -d "$dir" ] && echo "${dir%/}" | sed 's/^docker-//'; done | jq -R . | jq -s -c .)
             fi
+          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            MATRIX=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '^docker-' | cut -d'/' -f1 | sed 's/^docker-//' | sort -u | jq -R . | jq -s -c .)
           else
-            MATRIX='${{ steps.filter.outputs.changes }}'
+            MATRIX=$(git diff --name-only HEAD~1 HEAD | grep '^docker-' | cut -d'/' -f1 | sed 's/^docker-//' | sort -u | jq -R . | jq -s -c .)
           fi
           
           if [ -z "$MATRIX" ] || [ "$MATRIX" == "null" ]; then
             MATRIX="[]"
           fi
+          echo "Folders to build: $MATRIX"
           echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
 
   build-push:
