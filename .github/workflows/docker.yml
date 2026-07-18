@@ -103,8 +103,8 @@ jobs:
             linkding)              list="linkding" ;;
             metatube)              list="metatube" ;;
             ntfy)                  list="ntfy" ;;
-            traefik-cert-remover)  list="traefik-cert-remover-local traefik-cert-remover-jp traefik-cert-remover-us" ;;
-            traefik-cert-dumper)   list="traefik-cert-dumper-jp traefik-cert-dumper-us" ;;
+            traefik-cert-remover)  list="traefik-cert-remover" ;;
+            traefik-cert-dumper)   list="traefik-cert-dumper" ;;
             *)                     list="" ;;
           esac
           echo "list=$list" >> "$GITHUB_OUTPUT"
