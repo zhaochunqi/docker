@@ -18,6 +18,10 @@ on:
         required: false
         default: ''
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -78,8 +82,44 @@ jobs:
             type=raw,value={{date 'YYYY.MM.DD'}}
 
       - uses: docker/build-push-action@v5
+        id: build
         with:
           context: ./docker-${{ matrix.folder }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - uses: actions/checkout@v4
+        with:
+          repository: xiaolutech/dispatch-my-services-image-ref
+          ref: v1
+          path: .dispatch-action
+
+      - name: Resolve my-services targets
+        id: targets
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        run: |
+          case "${{ matrix.folder }}" in
+            linkding)              list="linkding" ;;
+            metatube)              list="metatube" ;;
+            ntfy)                  list="ntfy" ;;
+            traefik-cert-remover)  list="traefik-cert-remover-local traefik-cert-remover-jp traefik-cert-remover-us" ;;
+            traefik-cert-dumper)   list="traefik-cert-dumper-jp traefik-cert-dumper-us" ;;
+            *)                     list="" ;;
+          esac
+          echo "list=$list" >> "$GITHUB_OUTPUT"
+
+      - name: Dispatch image refs
+        if: >-
+          github.event_name != 'pull_request' &&
+          github.ref == 'refs/heads/main' &&
+          steps.targets.outputs.list != ''
+        env:
+          DISPATCH_TOKEN: ${{ secrets.MY_SERVICES_DISPATCH_TOKEN }}
+          DISPATCH_IMAGE_DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          for target in ${{ steps.targets.outputs.list }}; do
+            echo "Dispatching my-services update for target=${target}"
+            DISPATCH_TARGET="$target" \
+              bash .dispatch-action/scripts/dispatch-image-ref.sh
+          done
