@@ -1,0 +1,24 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "dependencyDashboard": true,
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "description": "new-api publishes rc tags as current releases",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["calciumion/new-api"],
+      "ignoreUnstable": false
+    },
+    {
+      "description": "floating tags — pin manually before enabling",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": [
+        "binwiederhier/ntfy",
+        "ghcr.io/metatube-community/metatube-server",
+        "litestream/litestream"
+      ],
+      "enabled": false
+    }
+  ]
+}
