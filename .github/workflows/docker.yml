@@ -81,7 +81,7 @@ jobs:
             type=sha,prefix=sha-
             type=raw,value={{date 'YYYY.MM.DD'}}
 
-      - uses: docker/build-push-action@v5
+      - uses: docker/build-push-action@v7
         id: build
         with:
           context: ./docker-${{ matrix.folder }}
