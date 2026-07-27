@@ -30,7 +30,7 @@ docker run -d \
   --name new-api \
   -p 3000:3000 \
   --env-file .env \
-  ghcr.io/zhaochunqi/newapi:latest
+  ghcr.io/zhaochunqi/new-api:latest
 ```
 
 ## 从源码构建

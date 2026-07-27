@@ -5,8 +5,9 @@
 ## 镜像列表
 
 | 镜像名称 | 描述 | GHCR 路径 |
-|---------|------|-----------|
+| --------- | ------ | ----------- |
 | docker-metatube | Metatube （带 litestream 持久化支持） | ghcr.io/zhaochunqi/metatube |
+| docker-new-api | New API（带 litestream 持久化支持） | ghcr.io/zhaochunqi/new-api |
 | docker-traefik-cert-dumper | Traefik 证书导出工具 | ghcr.io/zhaochunqi/traefik-cert-dumper |
 | docker-traefik-cert-remover | Traefik 证书清理工具 | ghcr.io/zhaochunqi/traefik-cert-remover |
 | docker-linkding | Linkding 书签管理器集成 Litestream | ghcr.io/zhaochunqi/linkding |
@@ -21,7 +22,7 @@
 每次成功推送会打这些 tag：
 
 | Tag | 说明 |
-|-----|------|
+| ----- | ------ |
 | `latest` | 默认分支最新构建 |
 | `sha-<short>` | 对应 commit 短 hash，可 pin 到具体构建 |
 | `YYYY.MM.DD` | 构建日期（同日多次构建会覆盖该日期 tag） |
@@ -31,9 +32,10 @@
 main 分支构建成功后，会把镜像 digest 通过 `repository_dispatch` 推到 [`zhaochunqi/my-services`](https://github.com/zhaochunqi/my-services)，由那边的 `update-image-ref` + `gitops-sync` 更新并部署服务。
 
 | 镜像 folder | my-services target(s) |
-|-------------|------------------------|
+| ------------- | ------------------------ |
 | `linkding` | `linkding` |
 | `metatube` | `metatube` |
+| `new-api` | `new-api` |
 | `ntfy` | `ntfy` |
 | `traefik-cert-remover` | `traefik-cert-remover-local`, `traefik-cert-remover-jp`, `traefik-cert-remover-us` |
 | `traefik-cert-dumper` | `traefik-cert-dumper-jp`, `traefik-cert-dumper-us` |

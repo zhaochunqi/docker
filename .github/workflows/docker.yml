@@ -5,18 +5,18 @@ on:
     branches:
       - main
     paths:
-      - 'docker-*/**'
+      - "docker-*/**"
   pull_request:
     branches:
       - main
     paths:
-      - 'docker-*/**'
+      - "docker-*/**"
   workflow_dispatch:
     inputs:
       folders:
-        description: 'Folders to build (comma separated, empty for all)'
+        description: "Folders to build (comma separated, empty for all)"
         required: false
-        default: ''
+        default: ""
 
 permissions:
   contents: read
@@ -46,7 +46,7 @@ jobs:
           else
             MATRIX=$(git diff --name-only HEAD~1 HEAD | grep '^docker-' | cut -d'/' -f1 | sed 's/^docker-//' | sort -u | jq -R . | jq -s -c .)
           fi
-          
+
           if [ -z "$MATRIX" ] || [ "$MATRIX" == "null" ]; then
             MATRIX="[]"
           fi
@@ -102,6 +102,7 @@ jobs:
           case "${{ matrix.folder }}" in
             linkding)              list="linkding" ;;
             metatube)              list="metatube" ;;
+            new-api)               list="new-api" ;;
             ntfy)                  list="ntfy" ;;
             traefik-cert-remover)  list="traefik-cert-remover" ;;
             traefik-cert-dumper)   list="traefik-cert-dumper" ;;
