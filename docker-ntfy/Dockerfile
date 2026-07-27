@@ -1,6 +1,6 @@
-FROM litestream/litestream AS builder
+FROM litestream/litestream:0.5 AS builder
 
-FROM binwiederhier/ntfy:latest
+FROM binwiederhier/ntfy:v2.26.3
 
 COPY --from=builder /usr/local/bin/litestream /usr/local/bin/litestream
 

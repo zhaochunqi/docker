@@ -9,16 +9,6 @@
       "matchDatasources": ["docker"],
       "matchPackageNames": ["calciumion/new-api"],
       "ignoreUnstable": false
-    },
-    {
-      "description": "floating tags — pin manually before enabling",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": [
-        "binwiederhier/ntfy",
-        "ghcr.io/metatube-community/metatube-server",
-        "litestream/litestream"
-      ],
-      "enabled": false
     }
   ]
 }

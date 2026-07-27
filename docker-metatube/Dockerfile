@@ -1,7 +1,6 @@
 FROM litestream/litestream:0.3 AS builder
 
-#FROM ghcr.io/metatube-community/metatube-server:latest
-FROM ghcr.io/metatube-community/metatube-server:dev
+FROM ghcr.io/metatube-community/metatube-server:1.4.0
 
 COPY --from=builder /usr/local/bin/litestream /usr/local/bin/litestream
 
