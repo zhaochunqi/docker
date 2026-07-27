@@ -1,0 +1,28 @@
+sync-interval: 10m
+
+snapshot:
+  interval: 1h
+  retention: 24h
+
+levels:
+  - interval: 1h
+    retention: 24h
+  - interval: 24h
+    retention: 168h
+
+validation:
+  interval: 24h
+
+dbs:
+  - path: ${SQLITE_DB_PATH}
+    monitor-interval: 15s
+    checkpoint-interval: 5m
+    replica:
+      type: s3
+      bucket: ${CLOUDFLARE_R2_BUCKET_NAME}
+      path: ${CLOUDFLARE_R2_PATH}
+      endpoint: ${CLOUDFLARE_R2_ENDPOINT}
+      region: us-east-1
+      access-key-id: ${LITESTREAM_ACCESS_KEY_ID}
+      secret-access-key: ${LITESTREAM_SECRET_ACCESS_KEY}
+      auto-recover: true
