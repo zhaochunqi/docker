@@ -1,8 +1,8 @@
-FROM python:3.11-slim-bookworm AS builder
+FROM python:3.14-slim-bookworm AS builder
 
 RUN pip install --no-cache-dir cryptography
 
-FROM python:3.11-slim-bookworm
+FROM python:3.14-slim-bookworm
 
 # tini 作为 init 进程，确保信号（SIGTERM）能正确传递给子进程，容器可以干净退出
 RUN apt-get update && apt-get install -y --no-install-recommends tini \
