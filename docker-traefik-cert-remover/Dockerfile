@@ -1,13 +1,16 @@
 FROM python:3.11-slim-bookworm AS builder
 
-COPY cleanup_certs.py /cleanup_certs.py
 RUN pip install --no-cache-dir cryptography
 
-FROM gcr.io/distroless/python3-debian12
+FROM python:3.11-slim-bookworm
 
-COPY --from=builder /cleanup_certs.py /cleanup_certs.py
-COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/dist-packages
+# tini 作为 init 进程，确保信号（SIGTERM）能正确传递给子进程，容器可以干净退出
+RUN apt-get update && apt-get install -y --no-install-recommends tini \
+    && rm -rf /var/lib/apt/lists/*
 
-ENTRYPOINT ["python3", "/cleanup_certs.py"]
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY cleanup_certs.py /cleanup_certs.py
+
+ENTRYPOINT ["/usr/bin/tini", "--", "python3", "/cleanup_certs.py"]
 CMD ["/data/acme.json"]
 
