@@ -1,4 +1,4 @@
-FROM litestream/litestream:0.3 AS builder
+FROM litestream/litestream:0.5 AS builder
 
 FROM ghcr.io/metatube-community/metatube-server:1.4.0
 

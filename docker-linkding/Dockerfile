@@ -2,7 +2,7 @@
 ARG VERSION="1.45.0"
 
 # Stage 1: Get Litestream binary
-FROM litestream/litestream:0.3 AS builder
+FROM litestream/litestream:0.5 AS builder
 
 # Stage 2: Main image based on Linkding
 FROM ghcr.io/sissbruecker/linkding:${VERSION}
