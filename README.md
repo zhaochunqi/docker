@@ -12,6 +12,7 @@
 | docker-traefik-cert-remover | Traefik 证书清理工具 | ghcr.io/zhaochunqi/traefik-cert-remover |
 | docker-linkding | Linkding 书签管理器集成 Litestream | ghcr.io/zhaochunqi/linkding |
 | docker-ntfy | ntfy 消息推送服务集成 Litestream | ghcr.io/zhaochunqi/ntfy |
+| docker-freellmapi | FreeLLMAPI 集成 Litestream | ghcr.io/zhaochunqi/freellmapi |
 
 ## 自动构建
 
@@ -36,6 +37,7 @@ main 分支构建成功后，会把镜像 digest 通过 `repository_dispatch` �
 | `linkding` | `linkding` |
 | `metatube` | `metatube` |
 | `new-api` | `new-api` |
+| `freellmapi` | `freellmapi` |
 | `ntfy` | `ntfy` |
 | `traefik-cert-remover` | `traefik-cert-remover-local`, `traefik-cert-remover-jp`, `traefik-cert-remover-us` |
 | `traefik-cert-dumper` | `traefik-cert-dumper-jp`, `traefik-cert-dumper-us` |

@@ -104,6 +104,7 @@ jobs:
             metatube)              list="metatube" ;;
             new-api)               list="new-api" ;;
             ntfy)                  list="ntfy" ;;
+            freellmapi)            list="freellmapi" ;;
             traefik-cert-remover)  list="traefik-cert-remover" ;;
             traefik-cert-dumper)   list="traefik-cert-dumper" ;;
             *)                     list="" ;;
