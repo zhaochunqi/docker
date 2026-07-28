@@ -12,7 +12,6 @@ COPY --from=builder /usr/local/bin/litestream /usr/local/bin/litestream
 # Copy Litestream configuration and custom entrypoint
 COPY litestream.yml /etc/litestream.yml
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
 
 # Use custom entrypoint that handles database restore and replication
 ENTRYPOINT ["/entrypoint.sh"]
