@@ -1,5 +1,5 @@
 dbs:
-  - path: /app/server/data/freellmapi.db
+  - path: /app/server/data/freeapi.db
     replica:
       type: s3
       endpoint: ${LITESTREAM_S3_ENDPOINT}

@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-DB_PATH="${FREEAPI_DB_PATH:-/app/server/data/freellmapi.db}"
+DB_PATH="${FREEAPI_DB_PATH:-/app/server/data/freeapi.db}"
 
 # Restore the database if it does not already exist.
 if [ -f "$DB_PATH" ]; then
