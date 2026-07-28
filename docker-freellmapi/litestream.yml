@@ -1,10 +1,25 @@
+sync-interval: 15m
+
+snapshot:
+  interval: 24h
+  retention: 24h
+
+levels:
+  - interval: 24h
+    retention: 168h
+
+validation:
+  interval: 24h
+
 dbs:
   - path: /app/server/data/freeapi.db
-    replica:
-      type: s3
-      endpoint: ${LITESTREAM_S3_ENDPOINT}
-      bucket: ${LITESTREAM_S3_BUCKET}
-      path: ${LITESTREAM_S3_PATH}
-      region: us-east-1
-      access-key-id: ${LITESTREAM_ACCESS_KEY_ID}
-      secret-access-key: ${LITESTREAM_SECRET_ACCESS_KEY}
+    monitor-interval: 15s
+    checkpoint-interval: 5m
+    replicas:
+      - type: s3
+        endpoint: ${LITESTREAM_S3_ENDPOINT}
+        bucket: ${LITESTREAM_S3_BUCKET}
+        path: ${LITESTREAM_S3_PATH}
+        region: us-east-1
+        access-key-id: ${LITESTREAM_ACCESS_KEY_ID}
+        secret-access-key: ${LITESTREAM_SECRET_ACCESS_KEY}

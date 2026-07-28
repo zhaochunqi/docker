@@ -1,5 +1,20 @@
+sync-interval: 15m
+
+snapshot:
+  interval: 24h
+  retention: 24h
+
+levels:
+  - interval: 24h
+    retention: 168h
+
+validation:
+  interval: 24h
+
 dbs:
   - path: /etc/ntfy/user.db
+    monitor-interval: 15s
+    checkpoint-interval: 5m
     replicas:
       - type: s3
         endpoint: https://${CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com
@@ -7,5 +22,3 @@ dbs:
         path: ntfy
         access-key-id: ${CLOUDFLARE_R2_ACCESS_KEY_ID}
         secret-access-key: ${CLOUDFLARE_R2_SECRET_ACCESS_KEY}
-        snapshot-interval: 24h
-        retention: 168h # 保留 7 天的备份
