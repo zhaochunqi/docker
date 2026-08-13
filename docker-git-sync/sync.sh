@@ -42,6 +42,10 @@ fi
 
 mkdir -p "$DEST"
 
+# 绑定卷/挂载目录的属主可能与本容器 uid 不一致（macOS 挂载映射为宿主机用户），
+# git ≥2.35 的 dubious ownership 安全检查会拒绝访问；显式豁免工作树目录。
+git config --global --add safe.directory "$DEST" 2>/dev/null || true
+
 if [ ! -d "$DEST/.git" ]; then
   log "initial clone: $REPO_URL (branch $BRANCH) -> $DEST"
   git clone --branch "$BRANCH" --single-branch "$REPO_URL" "$DEST"
@@ -56,7 +60,7 @@ git config user.email >/dev/null 2>&1 || git config user.email "git-sync@localho
 while true; do
   if git fetch --prune origin "$BRANCH"; then
     if git merge --ff-only "origin/$BRANCH" 2>"$DEST/.git-sync-merge.err"; then
-      log "synced: $(git rev-parse --short HEAD)"
+      log "synced: $(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
     else
       log "merge --ff-only failed (local divergence?): $(cat "$DEST/.git-sync-merge.err")"
     fi
