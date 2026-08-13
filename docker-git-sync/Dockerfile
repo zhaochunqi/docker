@@ -13,7 +13,7 @@ RUN chmod +x /sync.sh
 
 ENV REPO_URL="" \
     BRANCH="main" \
-    INTERVAL_SECONDS="60" \
+    INTERVAL_SECONDS="600" \
     DEST="/repo"
 
 ENTRYPOINT ["/usr/bin/tini", "--", "/sync.sh"]
