@@ -1,8 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
-  "dependencyDashboard": true,
-  "labels": ["dependencies"],
+  "extends": ["github>zhaochunqi/renovate-config"],
   "packageRules": [
     {
       "description": "new-api publishes rc tags as current releases",
