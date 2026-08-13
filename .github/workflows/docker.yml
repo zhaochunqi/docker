@@ -44,7 +44,12 @@ jobs:
           elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
             MATRIX=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '^docker-' | cut -d'/' -f1 | sed 's/^docker-//' | sort -u | jq -R . | jq -s -c .)
           else
-            MATRIX=$(git diff --name-only HEAD~1 HEAD | grep '^docker-' | cut -d'/' -f1 | sed 's/^docker-//' | sort -u | jq -R . | jq -s -c .)
+            BEFORE="${{ github.event.before }}"
+            if [ "${BEFORE}" = "0000000000000000000000000000000000000000" ]; then
+              MATRIX=$(git diff --name-only HEAD~1 HEAD | grep '^docker-' | cut -d'/' -f1 | sed 's/^docker-//' | sort -u | jq -R . | jq -s -c .)
+            else
+              MATRIX=$(git diff --name-only "${BEFORE}" "${{ github.sha }}" | grep '^docker-' | cut -d'/' -f1 | sed 's/^docker-//' | sort -u | jq -R . | jq -s -c .)
+            fi
           fi
 
           if [ -z "$MATRIX" ] || [ "$MATRIX" == "null" ]; then

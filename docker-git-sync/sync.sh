@@ -6,7 +6,7 @@
 #   REPO_URL          必填，远端 git 地址（https 或 ssh，如 git@github.com:owner/repo.git）
 #   BRANCH            默认 main
 #   INTERVAL_SECONDS  拉取间隔，默认 60
-#   DEST              工作树目录，默认 /logseq-graph
+#   DEST              工作树目录，默认 /repo
 #   GIT_SSH_COMMAND   可选，直接透传给 git（例如已把密钥卷挂载进容器时）
 #   SSH_PRIVATE_KEY   可选，私钥内容（含 -----BEGIN ...----- 头尾）；设置后自动构造
 #                     GIT_SSH_COMMAND 指向落盘的密钥，无需挂载文件
@@ -20,7 +20,7 @@ set -eu
 : "${REPO_URL:?REPO_URL is required (e.g. https://github.com/owner/repo.git)}"
 BRANCH="${BRANCH:-main}"
 INTERVAL="${INTERVAL_SECONDS:-60}"
-DEST="${DEST:-/logseq-graph}"
+DEST="${DEST:-/repo}"
 
 log() { echo "[git-sync] $(date -u +%Y-%m-%dT%H:%M:%SZ) $*"; }
 
