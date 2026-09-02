@@ -1,5 +1,8 @@
 sync-interval: 10m
 
+# v0.5 默认 15s 一次 L0 retention 检查，每次都对 S3 发 LIST（Class A），拉长到 1h
+l0-retention-check-interval: 1h
+
 snapshot:
   interval: 24h
   retention: 24h
