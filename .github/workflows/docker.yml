@@ -6,11 +6,13 @@ on:
       - main
     paths:
       - "docker-*/**"
+      - "policy/**"
   pull_request:
     branches:
       - main
     paths:
       - "docker-*/**"
+      - "policy/**"
   workflow_dispatch:
     inputs:
       folders:
@@ -23,6 +25,23 @@ permissions:
   packages: write
 
 jobs:
+  policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Install conftest
+        run: |
+          version=0.62.0
+          curl -sSfL "https://github.com/open-policy-agent/conftest/releases/download/v${version}/conftest_${version}_Linux_x86_64.tar.gz" | sudo tar -xz -C /usr/local/bin conftest
+          conftest --version
+
+      - name: Test policies
+        run: conftest verify --policy policy/
+
+      - name: Check litestream configs
+        run: conftest test --policy policy/ docker-*/litestream.yml
+
   build:
     runs-on: ubuntu-latest
     outputs:
@@ -59,7 +78,7 @@ jobs:
           echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
 
   build-push:
-    needs: build
+    needs: [build, policy]
     runs-on: ubuntu-latest
     if: ${{ needs.build.outputs.matrix != '[]' && needs.build.outputs.matrix != '' }}
     strategy:
