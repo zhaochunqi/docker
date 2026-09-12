@@ -1,0 +1,16 @@
+# Gatus 默认配置：
+#   - sqlite 持久化到 /data/gatus.db，由 litestream 复制到 S3
+#   - 部署时挂载你自己的配置替换默认值：-v ./config.yaml:/config/config.yaml
+storage:
+  type: sqlite
+  path: /data/gatus.db
+  caching: true
+
+endpoints:
+  # 自检端点：监控 gatus 自己的 web 服务是否存活
+  - name: gatus-selfcheck
+    group: internal
+    url: "http://localhost:8080/"
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"

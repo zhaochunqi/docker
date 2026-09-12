@@ -13,6 +13,7 @@
 | docker-linkding | Linkding 书签管理器集成 Litestream | ghcr.io/zhaochunqi/linkding |
 | docker-ntfy | ntfy 消息推送服务集成 Litestream | ghcr.io/zhaochunqi/ntfy |
 | docker-freellmapi | FreeLLMAPI 集成 Litestream | ghcr.io/zhaochunqi/freellmapi |
+| docker-gatus | Gatus 状态页（集成 Litestream 持久化） | ghcr.io/zhaochunqi/gatus |
 | docker-git-sync | 周期拉取远端 git 仓库到本地工作树（只读；支持 SSH 密钥 env 注入；后续扩展 rebase+push） | ghcr.io/zhaochunqi/git-sync |
 
 ## 自动构建
@@ -40,6 +41,7 @@ main 分支构建成功后，会把镜像 digest 通过 `repository_dispatch` �
 | `new-api` | `new-api` |
 | `freellmapi` | `freellmapi` |
 | `ntfy` | `ntfy` |
+| `gatus` | `gatus` |
 | `traefik-cert-remover` | `traefik-cert-remover-local`, `traefik-cert-remover-jp`, `traefik-cert-remover-us` |
 | `traefik-cert-dumper` | `traefik-cert-dumper-jp`, `traefik-cert-dumper-us` |
 
