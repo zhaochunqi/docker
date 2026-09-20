@@ -1,4 +1,4 @@
-ARG VERSION="v0.11.0"
+ARG VERSION="v0.11.1"
 
 # Stage 1: Get Litestream binary
 FROM litestream/litestream:0.5 AS builder
