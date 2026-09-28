@@ -1,5 +1,5 @@
 # Build arguments for metadata
-ARG VERSION="2.5.0"
+ARG VERSION="2.6.0"
 
 # Stage 1: Get Litestream binary
 FROM litestream/litestream:0.5 AS litestream
