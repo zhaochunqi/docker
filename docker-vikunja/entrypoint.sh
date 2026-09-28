@@ -3,8 +3,8 @@ set -e
 
 DB_PATH="${VIKUNJA_DATABASE_PATH:-/data/vikunja.db}"
 
-# Attachment storage must exist and be writable by uid 1000.
 mkdir -p "$(dirname "$DB_PATH")" "${VIKUNJA_FILES_PATH:-/app/vikunja/files}" 2>/dev/null || true
+chown -R 1000:1000 "$(dirname "$DB_PATH")" "${VIKUNJA_FILES_PATH:-/app/vikunja/files}" 2>/dev/null || true
 
 # Restore the database if it does not already exist.
 if [ -f "$DB_PATH" ]; then

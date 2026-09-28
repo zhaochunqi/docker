@@ -35,12 +35,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
 COPY --from=vikunja /app/vikunja/vikunja /app/vikunja/vikunja
 COPY --from=litestream /usr/local/bin/litestream /usr/local/bin/litestream
 
-# Vikunja runs as uid 1000 in the official image; keep that.
-# /tmp must stay 1777 so attachment/data export works.
-# /data holds the SQLite database (the only Litestream-replicated state).
-# /app/vikunja/files is Vikunja's default attachment dir (see its docs).
 RUN mkdir -p /data /app/vikunja/files \
-    && chown -R 1000:1000 /app/vikunja \
+    && chown -R 1000:1000 /data /app/vikunja \
     && chmod 1777 /tmp
 
 COPY litestream.yml /etc/litestream.yml
