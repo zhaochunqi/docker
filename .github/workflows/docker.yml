@@ -131,7 +131,6 @@ jobs:
             freellmapi)            list="freellmapi" ;;
             git-sync)             list="git-sync" ;;
             gatus)                list="gatus" ;;
-            vikunja)              list="vikunja" ;;
             traefik-cert-remover)  list="traefik-cert-remover" ;;
             traefik-cert-dumper)   list="traefik-cert-dumper" ;;
             *)                     list="" ;;
