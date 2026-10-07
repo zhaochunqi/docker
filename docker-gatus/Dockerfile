@@ -13,7 +13,9 @@ FROM debian:bookworm-slim
 
 # CA certificates for TLS (gatus monitoring requests + litestream S3 replication)
 # wget is used by the deployment-side healthcheck
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates wget \
+# tini 当 PID 1：litestream 只管自己的子进程，容器内孤儿进程（如 healthcheck
+# 被 reparent 到 PID 1）无人回收会堆积成僵尸。tini 作为 init 负责 reap。
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates wget tini \
     && rm -rf /var/lib/apt/lists/*
 
 # Static gatus binary (web UI is embedded in the binary)
@@ -38,4 +40,4 @@ ENV GATUS_CONFIG_PATH="/config/config.yaml" \
 EXPOSE 8080
 
 # Use custom entrypoint that handles database restore and replication
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/usr/bin/tini", "--", "/entrypoint.sh"]
