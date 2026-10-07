@@ -14,7 +14,7 @@
 | docker-ntfy | ntfy 消息推送服务集成 Litestream | ghcr.io/zhaochunqi/ntfy |
 | docker-freellmapi | FreeLLMAPI 集成 Litestream | ghcr.io/zhaochunqi/freellmapi |
 | docker-gatus | Gatus 状态页（集成 Litestream 持久化） | ghcr.io/zhaochunqi/gatus |
-| docker-git-sync | 周期拉取远端 git 仓库到本地工作树（只读；支持 SSH 密钥 env 注入；后续扩展 rebase+push） | ghcr.io/zhaochunqi/git-sync |
+| docker-git-sync | 双向同步 git 仓库到本地工作树：周期 fetch + **把本地改动 commit & push**；与 logseq-graph-api 用同一个 flock 写锁互斥，markdown 冲突走并集合并（两边条目都保留，并集不掉则停止推送） | ghcr.io/zhaochunqi/git-sync |
 
 ## 自动构建
 
