@@ -1,6 +1,6 @@
 FROM litestream/litestream:0.5 AS builder
 
-FROM binwiederhier/ntfy:v2.28.0
+FROM binwiederhier/ntfy:v2.29.0
 
 RUN apk add --no-cache tini
 
