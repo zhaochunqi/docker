@@ -1,4 +1,4 @@
-FROM python:3.14-slim-bookworm
+FROM python:3.15-slim-bookworm
 
 # tini 作为 init 进程，确保信号（SIGTERM）能正确传递给子进程，容器可以干净退出
 RUN apt-get update && apt-get install -y --no-install-recommends tini \
