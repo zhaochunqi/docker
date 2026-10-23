@@ -40,4 +40,4 @@ Surge 客户端对应策略行(要求 Surge Mac ≥ 6.7 / iOS ≥ 5.20):
 
 ## 构建平台
 
-linux/amd64 + linux/arm64(CI 见 workflow 里的 platforms 条件;arm64 供 Apple Silicon 上的 Docker / OrbStack 使用)。
+linux/amd64 单架构(家宽 Mac xiaoken 是 Intel)。注意 snell v6 官方 macOS 二进制只有 arm64,Intel Mac 上跑 v6 只能走 linux-amd64 容器——这正是本镜像存在的理由。Dockerfile 保留了 TARGETARCH 的 aarch64 分支,将来有 ARM 机器时在 workflow 加回 setup-qemu-action 和 platforms 条件即可。
