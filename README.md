@@ -15,6 +15,7 @@
 | docker-freellmapi | FreeLLMAPI 集成 Litestream | ghcr.io/zhaochunqi/freellmapi |
 | docker-gatus | Gatus 状态页（集成 Litestream 持久化） | ghcr.io/zhaochunqi/gatus |
 | docker-git-sync | 双向同步 git 仓库到本地工作树：周期 fetch + **把本地改动 commit & push**；与 logseq-graph-api 用同一个 flock 写锁互斥，markdown 冲突走并集合并（两边条目都保留，并集不掉则停止推送） | ghcr.io/zhaochunqi/git-sync |
+| docker-snell | nssurge Snell 代理服务端（v6，构建期从官方 dl.nssurge.com 拉取二进制） | ghcr.io/zhaochunqi/snell |
 
 ## 自动构建
 
@@ -44,5 +45,6 @@ main 分支构建成功后，会把镜像 digest 通过 `repository_dispatch` �
 | `gatus` | `gatus` |
 | `traefik-cert-remover` | `traefik-cert-remover-local`, `traefik-cert-remover-jp`, `traefik-cert-remover-us` |
 | `traefik-cert-dumper` | `traefik-cert-dumper-jp`, `traefik-cert-dumper-us` |
+| `snell` | `snell` |
 
 本仓库需要配置 secret `MY_SERVICES_DISPATCH_TOKEN`（对 `my-services` 有 `Contents: write` 的 PAT）。不能用默认 `GITHUB_TOKEN`，否则 my-services 侧的 push 不会触发 GitOps 同步。
