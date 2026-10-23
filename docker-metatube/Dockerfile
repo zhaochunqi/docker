@@ -1,6 +1,7 @@
 FROM litestream/litestream:0.5 AS builder
 
-FROM ghcr.io/metatube-community/metatube-server:1.4.0
+# sdk-go #378 的 JavBus dv cookie 修复只在 dev tag 上（1.4.0 是 2026-03 的）
+FROM ghcr.io/metatube-community/metatube-server:dev
 
 RUN apk add --no-cache tini
 
