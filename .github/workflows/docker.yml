@@ -54,20 +54,40 @@ jobs:
       - name: Detect changed folders
         id: set-matrix
         run: |
+          # A commit that deletes docker-<name>/ still shows that path in the diff, so the
+          # diff alone is not enough: keep only folders that exist in this checkout,
+          # otherwise build-push dies on `unable to prepare context: path not found`.
+          keep_existing() {
+            while IFS= read -r folder; do
+              if [ -z "$folder" ]; then
+                continue
+              fi
+              if [ -d "docker-$folder" ]; then
+                echo "$folder"
+              else
+                echo "skip missing folder: docker-$folder" >&2
+              fi
+            done
+          }
+
+          changed_folders() {
+            git diff --name-only "$@" | grep '^docker-' | cut -d'/' -f1 | sed 's/^docker-//' | sort -u || true
+          }
+
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             if [[ "${{ github.event.inputs.folders }}" != "" ]]; then
-              MATRIX=$(echo "${{ github.event.inputs.folders }}" | jq -Rc 'split(",")')
+              MATRIX=$(echo "${{ github.event.inputs.folders }}" | tr ',' '\n' | tr -d ' ' | keep_existing | jq -R . | jq -s -c .)
             else
               MATRIX=$(for dir in docker-*/; do [ -d "$dir" ] && echo "${dir%/}" | sed 's/^docker-//'; done | jq -R . | jq -s -c .)
             fi
           elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            MATRIX=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '^docker-' | cut -d'/' -f1 | sed 's/^docker-//' | sort -u | jq -R . | jq -s -c .)
+            MATRIX=$(changed_folders "${{ github.event.pull_request.base.sha }}" "${{ github.sha }}" | keep_existing | jq -R . | jq -s -c .)
           else
             BEFORE="${{ github.event.before }}"
             if [ "${BEFORE}" = "0000000000000000000000000000000000000000" ]; then
-              MATRIX=$(git diff --name-only HEAD~1 HEAD | grep '^docker-' | cut -d'/' -f1 | sed 's/^docker-//' | sort -u | jq -R . | jq -s -c .)
+              MATRIX=$(changed_folders HEAD~1 HEAD | keep_existing | jq -R . | jq -s -c .)
             else
-              MATRIX=$(git diff --name-only "${BEFORE}" "${{ github.sha }}" | grep '^docker-' | cut -d'/' -f1 | sed 's/^docker-//' | sort -u | jq -R . | jq -s -c .)
+              MATRIX=$(changed_folders "${BEFORE}" "${{ github.sha }}" | keep_existing | jq -R . | jq -s -c .)
             fi
           fi
 
