@@ -1,7 +1,7 @@
 # 钉死 sdk-go commit，重建可复现；升SDK 时手动改这里（可顺手看 main 上新 provider）
 ARG SDK_REF=59ac7f294e9c5b7fac400c5adbc3777a36cff5a4
 
-FROM golang:1.26-alpine AS server-builder
+FROM golang:1.27-alpine AS server-builder
 ARG SDK_REF
 RUN apk add --no-cache git \
     && git clone https://github.com/metatube-community/metatube-sdk-go /src \
