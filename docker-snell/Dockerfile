@@ -4,7 +4,7 @@
 # 注意:官方不发布校验和,升级 = 改 SNELL_VERSION 重新构建。
 ARG SNELL_VERSION=v6.0.0
 
-FROM debian:bookworm-slim AS downloader
+FROM debian:bookworm-slim@sha256:734a72b3d6142a71993b4bc580ca01d8ca687f77a2c422d96a961d3376b179bc AS downloader
 
 ARG SNELL_VERSION
 ARG TARGETARCH
@@ -23,7 +23,7 @@ RUN apt-get update \
 
 # 官方二进制动态链接 glibc + libstdc++(musl/alpine 直接 exec not found),
 # DNS 解析也依赖 glibc 语义,网络服务不用 alpine
-FROM debian:bookworm-slim
+FROM debian:bookworm-slim@sha256:734a72b3d6142a71993b4bc580ca01d8ca687f77a2c422d96a961d3376b179bc
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends tini libstdc++6 \

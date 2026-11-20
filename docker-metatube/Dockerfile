@@ -13,9 +13,9 @@ WORKDIR /src
 RUN CGO_ENABLED=0 go build -ldflags '-w -s' -tags experimental -trimpath \
     -o /metatube-server ./cmd/server
 
-FROM litestream/litestream:0.5 AS builder
+FROM litestream/litestream:0.5@sha256:513bff62a88fc0c86c73d27333c41c54c89fe890a7c32a551600adff9309b11b AS builder
 
-FROM alpine:latest
+FROM alpine:latest@sha256:f59abe656b692d901e184be3445e084786602108599d2a51d229c0f5a48c71bf
 RUN apk add --no-cache tini ca-certificates tzdata
 
 COPY --from=server-builder /metatube-server /metatube-server

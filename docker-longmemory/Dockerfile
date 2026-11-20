@@ -5,7 +5,7 @@
 ARG LM_REF=8badf44d48d0d72a07e1ea3daf1ecbd76ae1a357
 
 # Stage 1: Get Litestream binary
-FROM litestream/litestream:0.5 AS litestream
+FROM litestream/litestream:0.5@sha256:513bff62a88fc0c86c73d27333c41c54c89fe890a7c32a551600adff9309b11b AS litestream
 
 # Stage 2: Build the LongMemory tarball from upstream source（上游 Dockerfile build stage 原样）
 FROM node:22.23.5-bookworm-slim AS builder

@@ -2,14 +2,14 @@
 ARG VERSION="v5.37.0"
 
 # Stage 1: Get Litestream binary
-FROM litestream/litestream:0.5 AS litestream
+FROM litestream/litestream:0.5@sha256:513bff62a88fc0c86c73d27333c41c54c89fe890a7c32a551600adff9309b11b AS litestream
 
 # Stage 2: Official gatus image (scratch-based, only the static binary + CA certs)
 FROM ghcr.io/twin/gatus:${VERSION} AS gatus
 
 # Stage 3: Rebuild on debian-slim (official scratch image has no shell for the
 # entrypoint script), carrying the static gatus binary and litestream.
-FROM debian:bookworm-slim
+FROM debian:bookworm-slim@sha256:734a72b3d6142a71993b4bc580ca01d8ca687f77a2c422d96a961d3376b179bc
 
 # CA certificates for TLS (gatus monitoring requests + litestream S3 replication)
 # wget is used by the deployment-side healthcheck
