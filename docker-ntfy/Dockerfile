@@ -1,4 +1,4 @@
-FROM litestream/litestream:0.5 AS builder
+FROM litestream/litestream:0.5@sha256:513bff62a88fc0c86c73d27333c41c54c89fe890a7c32a551600adff9309b11b AS builder
 
 FROM binwiederhier/ntfy:v2.38.1
 

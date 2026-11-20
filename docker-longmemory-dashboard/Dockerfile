@@ -3,7 +3,7 @@
 ARG LM_REF=8badf44d48d0d72a07e1ea3daf1ecbd76ae1a357
 
 # ===== BUILD STAGE =====
-FROM node:20.20.2-alpine AS builder
+FROM node:20.20.2-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293 AS builder
 ARG LM_REF
 WORKDIR /app
 # busybox tar 不支持 --wildcards；先整包解压再取 dashboard/ 子目录
@@ -18,7 +18,7 @@ RUN npm ci
 RUN npm run build
 
 # ===== PRODUCTION STAGE =====（上游 dashboard/Dockerfile 的 production stage 原样）
-FROM node:20.20.2-alpine AS production
+FROM node:20.20.2-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293 AS production
 ARG LM_REF
 
 # OCI standard labels
